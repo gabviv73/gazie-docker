@@ -2,6 +2,10 @@
 
 Forked by GabrieleV
 
+## TODO
+
+* montare volumi dati
+
 ## Perché Gazie-Docker
 
 GAzie sta Gestione Aziendale.

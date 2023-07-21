@@ -1,0 +1,33 @@
+version: "3.1"
+
+services:
+
+  gazie-app:
+    image: docker.rvmgroup.it/gazie-php:9.05
+    container_name: gazie-app
+    restart: unless-stopped
+    ports:
+      - 8971:80
+    environment:
+      - MARIADB_ROOT_PASSWORD=gazieRootPassword
+      - MARIADB_DATABASE=gazie
+      - MARIADB_USER=gazie
+      - MARIADB_PASSWORD=gaziePassword
+#    volumes:
+#      - ./www:/var/www/html
+    depends_on:
+      - gazie-db
+
+  gazie-db:
+    image: mariadb:10.11
+    container_name: gazie-db
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=gazieRootPassword
+      - MARIADB_DATABASE=gazie
+      - MARIADB_USER=gazie
+      - MARIADB_PASSWORD=gaziePassword
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
