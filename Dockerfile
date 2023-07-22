@@ -47,6 +47,7 @@ WORKDIR /var/www/html
 
 RUN curl -fkSL -o gazie.zip https://downloads.sourceforge.net/project/gazie/gazie/${VERSION}/gazie${VERSION}.zip
 RUN unzip -q gazie.zip
+RUN rm -f gazie.zip
 RUN /bin/bash -O dotglob -c 'mv gazie/* .'
 RUN rmdir gazie
 
