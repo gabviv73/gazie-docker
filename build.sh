@@ -13,5 +13,5 @@ if [ "$1" == "" ]; then
 fi
 
 BUILD_VERSION=$1
-docker build -t docker.rvmgroup.it/gazie-php:$BUILD_VERSION --build-arg BUILD_VERSION=$BUILD_VERSION .
+docker build -t gabrieleviv/gazie-docker:$BUILD_VERSION --build-arg BUILD_VERSION=$BUILD_VERSION .
 
