@@ -1,116 +1,27 @@
-# GAzie Docker
+# GAzie Docker Unofficial
 
-Forked by GabrieleV
+Forked from https://github.com/danelsan/gazie-docker
 
-* TODO: copia e sed di gconfig in build immagine
+ATTUALMENTE IN ALPHA. USATELO A VOSTRO RISCHIO E PERICOLO.
 
-* Per importare dati sql zz-mydata.sql
-* mkdir data; rsync data
+## TODO
+* Consentire personalizzazione nomi container, database, user e password  per riferimenti DB
+* Verificare Invio mail
 
-## Perché Gazie-Docker
+## Getting started
 
-GAzie sta Gestione Aziendale.
-Il software è opensource e liberamente caricabile dal sito:
+  git clone https://github.com/GabrieleV/gazie-docker.git
+  cd gazie-docker
+  docker compose up
 
-https://sourceforge.net/p/gazie/code/HEAD/tree/trunk/
+* http://x.y.z:8175
 
-Il sito ufficiale di GAzie è: http://www.devincentiis.it/
+That's it !
 
-Grazie a Gazie-Docker potrai installare l'ultima versione
-stabile di Gazie in meno di 10 minuti.
+## Importare dati da un'altra installazione GAzie
 
-Avrai così la tua infrastruttura Gazie con NGINX, PHP-FPM e database MARIADB.
+* Esportare il DB con l'opzione DROP TABLES
+* Salvare il file esportato in docker-entrypoint-initdb.d/zz-mydata.sql
+* Copiare i files dalla precedente data/ in ./data
 
-
-## Installazione
-
-Per l'installazione occorre in primo luogo avere installato
-l'applicativo docker
-
-https://www.docker.com/
-
-Copiare il file .config.origin in conf
-
-`cp .config.origin conf`
-
-Modificare il file di configurazione conf
-
-`vi conf`
-
-ed eseguire il build per creare le immagini Gazie-Docker, Gazie-Nginx
-
-`make build`
-
-Potete per esempio lavorare sul vostro pc senza installare mysql o php, ma semplicemente docker.
-
-
-## Esecuzione Immagini Docker
-
-Per eseguire le immagini docker create scrivere
-
-`make start`
-
-Per stoppare le immagini docker eseguire
-
-`make stop`
-
-## Backup Database
-
-
-Per effettuare il backup logico del database basta digitare
-
-`./backup.sh [ nome-backup.sql ]`
-
-Il risultato sarà un file sql, di tutte le tabelle e le righe
-del database.
-Se si vuole comprimere i backup aggiungere il comando
-
-`gzip [ nome-backup.sql ]`
-
-Il risultato è un file compresso .gz che potrà essere ripristinato.
-
-
-## Restore Database di Backup
-
-
-Se hai un backup da ripristinare puoi semplicemente editare:
-
-`./restore.sh  [ file-dump-gzip ]`
-
-Il comando ripristina il database sul database Mariadb.
-
-## Esecuzione PHPMYADMIN
-
-Per utilizzare PHPMYADMIN occorre eseguire il file:
-
-`./run_phpmyadmin.sh`
-
-Si potrà poi consultare il database eseguendo:
-
-http://localhost:8080/
-
-## Modificare i file PHP
-
-
-Se si deve testare la versione di gazie e modificare qualche file .php
-si può accedere all'immagine ove risiede Gazie con il seguente comando:
-
-`docker exec  -ti phpfpm bash`
-
-A questo punto comparirà la shell e si potranno editare i file con il
-come tools vim:
-
-Es:
-root@cdec42c9aa5c:/var/www/html# vi config/config/gconfig.php
-
-## Sviluppo di Gazie Con Docker
-
-Quando inserisci la versione di Gazie puoi semplicemente digitare
-
-`$GAZIE_VERSION=dev`
-
-Il software costruirà le macchine di web e server, menetre potrai aggiornare il software all'interno della cartella
-
-`gazie/`
-
-gestibile con il software svn.
+That's it !

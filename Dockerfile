@@ -20,7 +20,8 @@ RUN \
     unzip \ 
     libc-client-dev \
     libkrb5-dev \
-    git
+    curl
+#    git
 RUN docker-php-ext-install -j$(nproc) iconv
 RUN docker-php-ext-install -j$(nproc) mysqli
 RUN docker-php-ext-install -j$(nproc) pdo
@@ -44,19 +45,18 @@ RUN /etc/init.d/sendmail reload
 
 WORKDIR /var/www/html
 
-#RUN curl -fkSL -o gazie.zip "$VERSION"
-RUN git clone -b v$VERSION https://github.com/danelsan/GAzie-mirror.git .
-RUN apt-get autoremove --purge -y git
+RUN curl -fkSL -o gazie.zip https://downloads.sourceforge.net/project/gazie/gazie/${VERSION}/gazie${VERSION}.zip
+RUN unzip -q gazie.zip
+RUN /bin/bash -O dotglob -c 'mv gazie/* .'
+RUN rmdir gazie
+
+#RUN git clone -b v$VERSION https://github.com/danelsan/GAzie-mirror.git .
+#RUN apt-get autoremove --purge -y git
 RUN mv config/config/gconfig.myconf.default.php config/config/gconfig.myconf.php
 RUN sed -i -e "s/define('Host', 'localhost');/define('Host', 'gazie-db');/"     config/config/gconfig.myconf.php
 RUN sed -i -e "s/define('User', 'root');/define('User', 'gazie');/"             config/config/gconfig.myconf.php
 RUN sed -i -e "s/define('Password', '');/define('Password', 'gaziePassword');/" config/config/gconfig.myconf.php
-RUN mkdir data/files/1
-
-RUN apt-get -y autoclean \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-    && rm -r /var/lib/apt/lists/*
-
+RUN mkdir -p data/files/1
 RUN chown -R www-data:www-data .
 RUN chmod -R 755 .
 RUN chmod -R g+w data
@@ -78,5 +78,9 @@ ENV LANGUAGE en_US.UTF-8
 #VOLUME /var/www/html
 
 RUN /etc/init.d/sendmail start
+
+RUN apt-get -y autoclean \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+    && rm -r /var/lib/apt/lists/*
 
 EXPOSE 80
