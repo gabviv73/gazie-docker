@@ -3,7 +3,7 @@ version: "3.1"
 services:
 
   gazie-app:
-    image: gabrieleviv/gazie-php:9.05
+    image: gabrieleviv/gazie-docker:9.05
     container_name: gazie-app
     restart: unless-stopped
     ports:
