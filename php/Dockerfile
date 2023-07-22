@@ -1,44 +1,54 @@
 FROM php:8.2-apache
+ARG BUILD_VERSION
+ENV VERSION $BUILD_VERSION
 
-MAINTAINER Gabriele Vivinetto
+RUN \
+  --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  apt-get update && \
+  apt-get install -y \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libxml2 \
+    libxml2-dev \
+    libxpm-dev \
+    libxslt1-dev \
+    libzip-dev \
+    locales locales-all \
+    sendmail  \
+    unzip \ 
+    libc-client-dev \
+    libkrb5-dev \
+    git
+RUN docker-php-ext-install -j$(nproc) iconv
+RUN docker-php-ext-install -j$(nproc) mysqli
+RUN docker-php-ext-install -j$(nproc) pdo
+RUN docker-php-ext-install -j$(nproc) pdo_mysql
+RUN docker-php-ext-configure gd \
+     --with-freetype \
+     --with-jpeg
+RUN docker-php-ext-install -j$(nproc) gd
+RUN docker-php-ext-install xsl
+RUN docker-php-ext-install -j$(nproc) zip
+RUN docker-php-ext-install intl
 
-RUN apt-get update && apt-get install -y \
-      libfreetype6-dev \
-      libjpeg62-turbo-dev \
-      libpng-dev \
-      libxml2 \
-      libxml2-dev \
-      libxpm-dev \
-      libxslt1-dev \
-      libzip-dev \
-      locales locales-all \
-      sendmail  \
-      unzip \ 
-    && docker-php-ext-install -j$(nproc) iconv \
-    && docker-php-ext-install -j$(nproc) mysqli pdo pdo_mysql \
-    && docker-php-ext-configure gd \
-		--with-freetype \
-		--with-jpeg \
-    && docker-php-ext-install xsl \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install -j$(nproc) zip \
-    && docker-php-ext-install intl
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
+RUN docker-php-ext-install imap
 
-RUN apt-get install -y libc-client-dev libkrb5-dev \
-    && make -C /etc/mail
-
-RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-  && docker-php-ext-install imap
+RUN make -C /etc/mail
 
 RUN /etc/init.d/sendmail reload
 #RUN echo "php_admin_value[sendmail_path] = /usr/sbin/sendmail -t -i -X /var/log/sendmail/sendmail.log" >> /usr/local/etc/php-fpm.conf
 #RUN echo -e "$(hostname -i)\t$(hostname) $(hostname).localhost" >> /etc/hosts
 
 WORKDIR /var/www/html
-RUN apt-get install -y git
-RUN git clone -b v9.05 https://github.com/danelsan/GAzie-mirror.git .
+
+#RUN curl -fkSL -o gazie.zip "$VERSION"
+RUN git clone -b v$VERSION https://github.com/danelsan/GAzie-mirror.git .
 RUN apt-get autoremove --purge -y git
 COPY gconfig.myconf.php config/config/gconfig.myconf.php
+RUN mkdir data/files/1
 
 RUN apt-get -y autoclean \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
