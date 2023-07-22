@@ -2,9 +2,8 @@
 
 Forked by GabrieleV
 
-## TODO
-
-* montare volumi dati
+* Per importare dati sql zz-mydata.sql
+* mkdir data; rsync data
 
 ## Perché Gazie-Docker
 
