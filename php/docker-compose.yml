@@ -13,8 +13,8 @@ services:
       - MARIADB_DATABASE=gazie
       - MARIADB_USER=gazie
       - MARIADB_PASSWORD=gaziePassword
-#    volumes:
-#      - ./www:/var/www/html
+    volumes:
+      - ./data:/var/www/html/data
     depends_on:
       - gazie-db
 
