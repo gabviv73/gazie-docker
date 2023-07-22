@@ -47,15 +47,20 @@ WORKDIR /var/www/html
 #RUN curl -fkSL -o gazie.zip "$VERSION"
 RUN git clone -b v$VERSION https://github.com/danelsan/GAzie-mirror.git .
 RUN apt-get autoremove --purge -y git
-COPY gconfig.myconf.php config/config/gconfig.myconf.php
+RUN mv config/config/gconfig.myconf.default.php config/config/gconfig.myconf.php
+RUN sed -i -e "s/define('Host', 'localhost');/define('Host', 'gazie-db');/"     config/config/gconfig.myconf.php
+RUN sed -i -e "s/define('User', 'root');/define('User', 'gazie');/"             config/config/gconfig.myconf.php
+RUN sed -i -e "s/define('Password', '');/define('Password', 'gaziePassword');/" config/config/gconfig.myconf.php
 RUN mkdir data/files/1
 
 RUN apt-get -y autoclean \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && rm -r /var/lib/apt/lists/*
 
-RUN   set -ex; \
-  chown -R www-data:www-data .; chmod -R 755 .; chmod -R 777 data; chmod -R 777 library;
+RUN chown -R www-data:www-data .
+RUN chmod -R 755 .
+RUN chmod -R g+w data
+RUN chmod -R g+w library;
 
 # All extension  
 #RUN sed -i "/^;security.limit_extensions =.*/asecurity.limit_extensions = " /usr/local/etc/php-fpm.d/www.conf
