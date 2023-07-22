@@ -2,6 +2,8 @@
 
 Forked by GabrieleV
 
+* TODO: copia e sed di gconfig in build immagine
+
 * Per importare dati sql zz-mydata.sql
 * mkdir data; rsync data
 
