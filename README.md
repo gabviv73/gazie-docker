@@ -12,6 +12,7 @@ ATTUALMENTE IN ALPHA. USATELO A VOSTRO RISCHIO E PERICOLO.
 ```
  git clone https://github.com/GabrieleV/gazie-docker.git
  cd gazie-docker
+ ln -s docker-compose-prod.yml docker-compose.yml
  docker compose up
 ```
 
@@ -26,3 +27,15 @@ That's it !
 * Copiare i files dalla precedente data/ in ./data
 
 That's it !
+
+# SVILUPPO
+
+* Creare l'immagine con
+    ./build.sh <version>
+
+* Linkare il docker.compose.yml alla versione di test:
+    ln -s docker-compose-test.yml docker-compose.yml
+
+* Avviare:
+    docker compose up
+
