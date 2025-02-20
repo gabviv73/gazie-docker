@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 ARG BUILD_VERSION
-ENV VERSION $BUILD_VERSION
+ENV VERSION=$BUILD_VERSION
 
 RUN \
   --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -10,18 +10,18 @@ RUN \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
-    libxml2 \
     libxml2-dev \
     libxpm-dev \
     libxslt1-dev \
     libzip-dev \
-    locales locales-all \
-    sendmail  \
-    unzip \ 
     libc-client-dev \
-    libkrb5-dev \
-    curl
-#    git
+    sendmail  \
+    curl \
+    unzip 
+    #libxml2 \
+    #locales locales-all \
+    #libkrb5-dev \
+
 RUN docker-php-ext-install -j$(nproc) iconv
 RUN docker-php-ext-install -j$(nproc) mysqli
 RUN docker-php-ext-install -j$(nproc) pdo
@@ -34,12 +34,12 @@ RUN docker-php-ext-install xsl
 RUN docker-php-ext-install -j$(nproc) zip
 RUN docker-php-ext-install intl
 
-RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
+RUN docker-php-ext-configure imap --with-imap-ssl # --with-kerberos
 RUN docker-php-ext-install imap
 
 RUN make -C /etc/mail
 
-RUN /etc/init.d/sendmail reload
+#RUN /etc/init.d/sendmail reload
 #RUN echo "php_admin_value[sendmail_path] = /usr/sbin/sendmail -t -i -X /var/log/sendmail/sendmail.log" >> /usr/local/etc/php-fpm.conf
 #RUN echo -e "$(hostname -i)\t$(hostname) $(hostname).localhost" >> /etc/hosts
 
@@ -72,16 +72,16 @@ RUN touch /usr/local/etc/php/conf.d/uploads.ini \
 
 COPY php-mail.conf /usr/local/etc/php/conf.d/mail.ini
 
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
 
 #VOLUME /var/www/html
 
-RUN /etc/init.d/sendmail start
-
-RUN apt-get -y autoclean \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-    && rm -r /var/lib/apt/lists/*
+#RUN /etc/init.d/sendmail start
+RUN apt autoremove --purge unzip curl -y && \
+    apt-get -y autoclean && \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
+    rm -r /var/lib/apt/lists/*
 
 EXPOSE 80

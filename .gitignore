@@ -1,8 +1,8 @@
 gazie/
 data/
+mysql/
+docker-entrypoint-initdb.d/zz-mydata.sql
+docker-compose.yml
 conf
 nginx/Dockerfile
 php-fpm/Dockerfile
-mysql
-zz-mydata.sql
-
