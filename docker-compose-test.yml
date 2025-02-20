@@ -1,7 +1,9 @@
 services:
 
   gazie-app:
-    image: gabrieleviv/gazie-docker:9.05
+    #image: gabrieleviv/gazie-docker:9.05
+    build:
+      context: .
     container_name: gazie-app
     restart: unless-stopped
     ports:
