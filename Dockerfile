@@ -30,14 +30,14 @@ RUN \
     --with-freetype \
     --with-jpeg && \
   docker-php-ext-install -j$(nproc) gd && \
-  docker-php-ext-install xsl && \
+  docker-php-ext-install -j$(nproc) xsl && \
   docker-php-ext-install -j$(nproc) zip && \
-  docker-php-ext-install intl && \
+  docker-php-ext-install -j$(nproc) intl && \
   apt-get install -y libkrb5-dev && \
   docker-php-ext-configure imap \
     --with-imap-ssl \
     --with-kerberos && \
-  docker-php-ext-install imap && \
+  docker-php-ext-install -j$(nproc) imap && \
   curl -fkSL -o gazie.zip https://downloads.sourceforge.net/project/gazie/gazie/${VERSION}/gazie${VERSION}.zip && \
   unzip -q gazie.zip && \
   rm -f gazie.zip && \
@@ -63,9 +63,10 @@ RUN \
     libxslt1-dev \
     libzip-dev \
     libc-client-dev \
+    libkrb5-dev \
     curl \
-    unzip \
-    locales-all && \
+    locales-all \
+    unzip && \
   apt-get -y autoclean && \
   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
   rm -r /var/lib/apt/lists/*
