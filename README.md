@@ -18,7 +18,9 @@ ATTUALMENTE IN ALPHA. USATELO A VOSTRO RISCHIO E PERICOLO.
 
 * http://x.y.z:8175
 
-That's it !
+* Utilizzare le credenziali di default: amministratore/password
+
+* That's it !
 
 ## Importare dati da un'altra installazione GAzie
 

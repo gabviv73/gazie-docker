@@ -54,19 +54,6 @@ RUN \
   chmod -R g+w library && \
   touch /usr/local/etc/php/conf.d/uploads.ini && \
   echo "upload_max_filesize = 100M;\npost_max_size = 100M;\nmax_execution_time = 3000;" >> /usr/local/etc/php/conf.d/uploads.ini && \
-  apt-get autoremove --purge -y \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    libxml2-dev \
-    libxpm-dev \
-    libxslt1-dev \
-    libzip-dev \
-    libc-client-dev \
-    libkrb5-dev \
-    curl \
-    locales-all \
-    unzip && \
   apt-get -y autoclean && \
   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
   rm -r /var/lib/apt/lists/*
