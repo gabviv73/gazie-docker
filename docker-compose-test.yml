@@ -1,9 +1,11 @@
 services:
 
   gazie-app:
-    image: gabrieleviv/gazie-docker
+    #build:
+    #  context: .
+    image: gabrieleviv/gazie-docker:9.05
     container_name: gazie-app
-    restart: unless-stopped
+    restart: no
     ports:
       - 8971:80
     environment:
@@ -13,13 +15,15 @@ services:
       - MARIADB_PASSWORD=gaziePassword
     volumes:
       - ./data:/var/www/html/data
+      - ./php.ini-development:/usr/local/etc/php/php.ini
     depends_on:
-      - gazie-db
+      gazie-db:
+        condition: service_healthy
 
   gazie-db:
     image: mariadb:10.11
     container_name: gazie-db
-    restart: unless-stopped
+    restart: no
     environment:
       - MARIADB_ROOT_PASSWORD=gazieRootPassword
       - MARIADB_DATABASE=gazie
@@ -28,4 +32,14 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    healthcheck:
+      #    test: exit 0
+      #    test: [ "CMD-SHELL", "mysqladmin" ,"ping", "-h", "localhost", "-u", "$$MYSQL_USER", "-p", "$$MYSQL_PASSWORD" ]
+      test: mysqladmin ping -h localhost -u $$MARIADB_USER -p$$MARIADB_PASSWORD || exit 1
+      # wait 10 seconds after the container is started
+      interval: 10s
+      # do the check and wait for 10s timeout
+      timeout:  10s
+      # repeat 3 times
+      retries:  3
 
