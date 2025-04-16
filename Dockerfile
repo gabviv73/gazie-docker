@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.2-apache AS gazie-apache
 ARG BUILD_VERSION
 ENV VERSION=${BUILD_VERSION}
 ENV LC_ALL=en_US.UTF-8
@@ -38,6 +38,12 @@ RUN \
     --with-imap-ssl \
     --with-kerberos && \
   docker-php-ext-install -j$(nproc) imap && \
+  apt-get -y autoclean && \
+  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
+  rm -r /var/lib/apt/lists/*
+
+FROM gazie-apache
+RUN \
   curl -fkSL -o gazie.zip https://downloads.sourceforge.net/project/gazie/gazie/${VERSION}/gazie${VERSION}.zip && \
   unzip -q gazie.zip && \
   rm -f gazie.zip && \
@@ -53,10 +59,7 @@ RUN \
   chmod -R g+w data && \
   chmod -R g+w library && \
   touch /usr/local/etc/php/conf.d/uploads.ini && \
-  echo "upload_max_filesize = 100M;\npost_max_size = 100M;\nmax_execution_time = 3000;" >> /usr/local/etc/php/conf.d/uploads.ini && \
-  apt-get -y autoclean && \
-  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  rm -r /var/lib/apt/lists/*
+  echo "upload_max_filesize = 100M;\npost_max_size = 100M;\nmax_execution_time = 3000;" >> /usr/local/etc/php/conf.d/uploads.ini
 
 COPY php-mail.conf /usr/local/etc/php/conf.d/mail.ini
 
