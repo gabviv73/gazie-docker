@@ -1,4 +1,4 @@
-FROM php:8.2-apache AS gazie-apache
+FROM php:8.3-apache AS gazie-apache
 ARG BUILD_VERSION
 ENV VERSION=${BUILD_VERSION}
 ENV LC_ALL=en_US.UTF-8
