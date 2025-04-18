@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+DEBUG_UPPER=$(printf '%s\n' "$DEBUG" | tr '[:lower:]' '[:upper:]')
+sed -i "s/define('debug_active', *[^)]*);/define('debug_active', ${DEBUG_UPPER});/" /var/www/html/config/config/gconfig.myconf.php
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+	set -- apache2-foreground "$@"
+fi
+
+exec "$@"

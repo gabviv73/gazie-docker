@@ -1,9 +1,12 @@
 FROM php:8.3-apache AS gazie-apache
 ARG BUILD_VERSION
+
 ENV VERSION=${BUILD_VERSION}
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
+ENV DEBUG=FALSE
+
 WORKDIR /var/www/html
 RUN \
   --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -62,5 +65,7 @@ RUN \
   echo "upload_max_filesize = 100M;\npost_max_size = 100M;\nmax_execution_time = 3000;" >> /usr/local/etc/php/conf.d/uploads.ini
 
 COPY php-mail.conf /usr/local/etc/php/conf.d/mail.ini
+COPY docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
+RUN chmod +x /usr/local/bin/docker-php-entrypoint
 
 EXPOSE 80

@@ -3,7 +3,7 @@ services:
   gazie-app:
     #build:
     #  context: .
-    image: gabrieleviv/gazie-docker:9.10
+    image: gabrieleviv/gazie-docker:9.06
     container_name: gazie-app
     restart: no
     ports:
@@ -13,9 +13,11 @@ services:
       - MARIADB_DATABASE=gazie
       - MARIADB_USER=gazie
       - MARIADB_PASSWORD=gaziePassword
+      - DEBUG=true
     volumes:
       - ./data:/var/www/html/data
       - ./php.ini-development:/usr/local/etc/php/php.ini
+      - ./php.ini-errors:/usr/local/etc/php/conf.d/errors.ini
       - ./phpinfo.php:/var/www/html/phpinfo.php
     depends_on:
       gazie-db:
@@ -42,6 +44,21 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+
+  gazie-phpmyadmin:
+        container_name: gazie-phpmyadmin
+        image: phpmyadmin
+        restart: unless-stopped
+        ports:
+            - 8915:80
+        environment:
+           - PMA_HOST=gazie-db
+           - MYSQL_ROOT_PASSWORD=gazieRootPassword
+           - UPLOAD_LIMIT=1G
+           - MAX_EXECUTION_TIME=600
+        depends_on:
+            gazie-db:
+                condition: service_healthy
      
 #  gazie-db-clean:
 #    image: mariadb:10.11
