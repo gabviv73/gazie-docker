@@ -3,7 +3,7 @@ services:
   gazie-app:
     #build:
     #  context: .
-    image: gabrieleviv/gazie-docker:9.06
+    image: gabrieleviv/gazie-docker:9.05
     container_name: gazie-app
     restart: no
     ports:
@@ -19,6 +19,7 @@ services:
       - ./php.ini-development:/usr/local/etc/php/php.ini
       - ./php.ini-errors:/usr/local/etc/php/conf.d/errors.ini
       - ./phpinfo.php:/var/www/html/phpinfo.php
+      - ./FoglioStileAssoSoftware.xsl:/var/www/html/library/include/FoglioStileAssoSoftware.xsl
     depends_on:
       gazie-db:
         condition: service_healthy
@@ -40,9 +41,9 @@ services:
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 10s
+      start_period: 120s
       interval: 10s
-      timeout: 5s
+      timeout: 30s
       retries: 3
 
   gazie-phpmyadmin:
